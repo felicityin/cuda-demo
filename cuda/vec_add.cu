@@ -11,14 +11,14 @@
         } \
     } while (0)
 
-__global__ void addV1(int *output, const int *a, const int *b, int n) {
+__global__ void add(int *output, const int *a, const int *b, int n) {
     int i = blockIdx.x * blockDim.x + threadIdx.x; 
     if (i < n){
         output[i] = a[i] + b[i];
     }
 }
 
-__global__ void add(int *output, const int *a, const int *b, int n) {
+__global__ void addV2(int *output, const int *a, const int *b, int n) {
     for (
         int i = blockIdx.x * blockDim.x + threadIdx.x; 
         i < n; 
@@ -54,7 +54,7 @@ int main() {
     CUDA_OK(cudaDeviceGetAttribute(&numSMs, cudaDevAttrMultiProcessorCount, 0));
     printf("num sms: %d\n", numSMs);
 
-    add<<<32 * numSMs, 256>>>(d_output, d_a, d_b, n);
+    addV2<<<32 * numSMs, 256>>>(d_output, d_a, d_b, n);
 
     CUDA_OK(cudaMemcpy(h_output, d_output, size, cudaMemcpyDeviceToHost));
 
